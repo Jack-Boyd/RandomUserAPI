@@ -1,0 +1,312 @@
+﻿@using Newtonsoft.Json;
+@using RandomUser.Models;
+@using System;
+@using System.IO;
+@using System.Net;
+@using System.Net.Http;
+@using System.Runtime.Serialization;
+@{
+    var putForm = Request["putinput"] != null;
+    var deleteForm = Request["deleteinput"] != null;
+
+    if (putForm)
+    {
+        User newUser = new User();
+        newUser.Name = new Name();
+        newUser.Name.Title = Request["title"];
+        newUser.Name.FirstName = Request["firstName"];
+        newUser.Name.LastName = Request["lastName"];
+        newUser.Email = Request["email"];
+        newUser.Gender = Request["gender"];
+        newUser.PhoneNumber = Request["phoneNumber"];
+        newUser.DateOfBirth = Convert.ToDateTime(Request["dob"]);
+        newUser.ThumbnailImage = Request["thumbnailImage"];
+        newUser.MainImage = Request["mainImage"];
+        newUser.UserId = Convert.ToInt32(Request["userid"]);
+        PutApi(newUser);
+    }
+    if (deleteForm)
+    {
+        var delete = Convert.ToInt32(Request["userid"]);
+        DeleteApi("https://localhost:44383/api/users", delete);
+    }
+    string URL = "https://localhost:44383/api/users";
+    string usersResponseString = GetApi(URL);
+    string filterExampleString1 = GetApi(URL + "?limit=10");
+    string filterExampleString2 = GetApi(URL + "?limit=30&firstname=el");
+    string filterExampleString3 = GetApi(URL + "?limit=3&firstname=el");
+    string filterExampleString4 = GetApi(URL + "?limit=10&firstname=e&lastname=e");
+    string filterExampleString5 = GetApi(URL + "?limit=1&firstname=e&lastname=e");
+
+    string userResponseString = GetApi(URL + "?id=5030");
+
+    User[] users = JsonConvert.DeserializeObject<User[]>(usersResponseString);
+    User[] filteredUsers1 = JsonConvert.DeserializeObject<User[]>(filterExampleString1);
+    User[] filteredUsers2 = JsonConvert.DeserializeObject<User[]>(filterExampleString2);
+    User[] filteredUsers3 = JsonConvert.DeserializeObject<User[]>(filterExampleString3);
+    User[] filteredUsers4 = JsonConvert.DeserializeObject<User[]>(filterExampleString4);
+    User[] filteredUsers5 = JsonConvert.DeserializeObject<User[]>(filterExampleString5);
+
+    User user = JsonConvert.DeserializeObject<User>(userResponseString);
+}
+<style>
+    input, select, textarea {
+        max-width: 580px;
+    }
+</style>
+<div class="jumbotron">
+    <h1>Random User API</h1>
+    <p class="lead">Replicate of randomuser.me</p>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h2>GET</h2>
+        <h4>Examples</h4>
+    </div>
+    <div class="col-md-12">
+        <a href="https://localhost:44383/api/users" target="_blank">https://localhost:44383/api/users</a>
+    </div>
+    @foreach (var u in users)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?limit=10" target="_blank">https://localhost:44383/api/users?limit=10</a>
+    </div>
+    @foreach (var u in filteredUsers1)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?limit=30&firstname=el" target="_blank">https://localhost:44383/api/users?limit=30&firstname=el</a>
+    </div>
+    @foreach (var u in filteredUsers2)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?limit=3&firstname=el" target="_blank">https://localhost:44383/api/users?limit=3&firstname=el</a>
+    </div>
+    @foreach (var u in filteredUsers3)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?limit=10&firstname=e&lastname=e" target="_blank">https://localhost:44383/api/users?limit=10&firstname=e&lastname=e</a>
+    </div>
+    @foreach (var u in filteredUsers4)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?limit=1&firstname=e&lastname=e" target="_blank">https://localhost:44383/api/users?limit=1&firstname=e&lastname=e</a>
+    </div>
+    @foreach (var u in filteredUsers5)
+    {
+        <div class="col-md-2">
+            <img alt="@u.Name.Title @u.Name.FirstName @u.Name.LastName" src="@u.MainImage" />
+            <p style="font-size: 10px">@u.Name.Title @u.Name.FirstName @u.Name.LastName</p>
+        </div>
+    }
+    <div class="col-md-12" style="margin-top: 20px">
+        <a href="https://localhost:44383/api/users?id=5030" target="_blank">https://localhost:44383/api/users?id=5030</a>
+    </div>
+    <div class="col-md-2">
+        <img alt="@user.Name.Title @user.Name.FirstName @user.Name.LastName" src="@user.MainImage" />
+        <p style="font-size: 10px">@user.Name.Title @user.Name.FirstName @user.Name.LastName</p>
+    </div>
+    <div class="col-md-12" style="margin-top: 60px">
+        <h2>PUT</h2>
+        <h4>Use form to perform PUT call</h4>
+        <p>https://localhost:44383/api/users</p>
+        <form method="post">
+            <div class="form-group">
+                <label for="userid">ID</label>
+                <select class="form-control" name="userid" id="useridselect">
+                    @foreach (var u in users)
+                    {
+                        <option value="@u.UserId">@u.UserId</option>
+                    }
+                </select>
+            </div>
+            @{
+                var first = users.First();
+            }
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="Title" name="title" value="@first.Name.Title">
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName" value="@first.Name.FirstName">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName" value="@first.Name.LastName">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control" id="email" placeholder="Email" name="email" value="@first.Email">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <input type="text" class="form-control" id="gender" placeholder="Gender" name="gender" value="@first.Gender">
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number" name="phoneNumber" value="@first.PhoneNumber">
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" class="form-control" id="dob" placeholder="Date of Birth" name="dob" value="@first.DateOfBirth.ToString("yyyy-MM-dd")">
+            </div>
+            <div class="form-group">
+                <label for="thumbnailImage">Thumbnail Image</label>
+                <input type="text" class="form-control" id="thumbnailImage" placeholder="Thumbnail Image" name="thumbnailImage" value="@first.ThumbnailImage">
+            </div>
+            <div class="form-group">
+                <label for="mainImage">Main Image</label>
+                <input type="text" class="form-control" id="mainImage" placeholder="Main Image" name="mainImage" value="@first.MainImage">
+            </div>
+            <input type="hidden" name="putinput" value="putinput" />
+            <button type="submit" class="btn btn-default">Call PUT Endpoint</button>
+        </form>
+    </div>
+    <div class="col-md-12" style="margin-top: 60px">
+        <h2>DELETE</h2>
+        <h4>Use form to perform DELETE call</h4>
+        <p>https://localhost:44383/api/users</p>
+        <form method="post">
+            <div class="form-group">
+                <label for="userid">ID</label>
+                <select class="form-control" name="userid" id="userid">
+                    @foreach (var u in users)
+                    {
+                        <option value="@u.UserId">@u.UserId</option>
+                    }
+                </select>
+            </div>
+            <input type="hidden" name="deleteinput" value="deleteinput" />
+            <button type="submit" class="btn btn-default">Call DELETE Endpoint</button>
+        </form>
+    </div>
+</div>
+
+@*<p>
+        public string Gender { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }
+        public string ThumbnailImage { get; set; }
+        public string MainImage { get; set; }
+        {
+        "UserId": 5001,
+        "Name": {
+        "Title": "Mr",
+        "FirstName": "Almeeerindo",
+        "LastName": "Rocha"
+        },
+        "Email": "almerindo.rocha@example.com",
+        "Gender": "male",
+        "DateOfBirth": "1979-09-26T04:35:23.847",
+        "PhoneNumber": "(19) 9040-6883",
+        "MainImageImage": "https://randomuser.me/api/portraits/thumb/men/75.jpg",
+        "MainImage": "https://randomuser.me/api/portraits/men/75.jpg"
+        }
+    </p>*@
+@section scripts {
+    <script type="text/javascript">
+        function formatDate(date) {
+            var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            return [year, month, day].join('-');
+        }
+        var arrayOfArrays = JSON.parse('@Html.Raw(Json.Encode(users))');
+            $('#useridselect').on('change', function (e) {
+                var user = arrayOfArrays.find(x => parseInt(x.UserId) === parseInt(this.value));
+                $('#title').val(user.Name.Title);
+                $('#firstName').val(user.Name.FirstName);
+                $('#lastName').val(user.Name.LastName);
+                $('#email').val(user.Email);
+                $('#gender').val(user.Gender);
+                $('#phoneNumber').val(user.PhoneNumber);
+                $('#thumbnailImage').val(user.ThumbnailImage);
+                $('#mainImage').val(user.MainImage);
+                $('#dob').val(formatDate(new Date(user.DateOfBirth.match(/\d+/)[0] * 1)));
+                console.log(formatDate(new Date(user.DateOfBirth.match(/\d+/)[0] * 1)));
+            }
+        );
+    </script>
+
+}
+@functions {
+    public string GetApi(string URL)
+    {
+        string responseString = string.Empty;
+        ServicePointManager.Expect100Continue = true;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+        request.Method = "GET";
+
+        var response = (HttpWebResponse)request.GetResponse();
+        using (var stream = response.GetResponseStream())
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                responseString = reader.ReadToEnd();
+            }
+        };
+        return responseString;
+    }
+
+    public void PutApi(User update)
+    {
+        var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://localhost:44383/api/users");
+        httpWebRequest.ContentType = "application/json";
+        httpWebRequest.Method = "PUT";
+        using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+        {
+            string json = JsonConvert.SerializeObject(update); // Need to put data here to pass to the API.**
+            streamWriter.Write(json);
+        }
+        var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        {
+            var responseText = streamReader.ReadToEnd();
+        }
+    }
+
+    public void DeleteApi(string URL, int id)
+    {
+        WebRequest request = WebRequest.Create(URL + "?id=" + id);
+        request.Method = "DELETE";
+        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+    }
+    public void Serialize(Stream output, object input)
+    {
+        var ser = new DataContractSerializer(input.GetType());
+        ser.WriteObject(output, input);
+    }
+}

@@ -1,0 +1,7 @@
+.vs/
+packages/
+RandomUser/[Bb]in/
+RandomUser/[Oo]bj/
+*.user
+*.suo
+*.[Cc]ache
