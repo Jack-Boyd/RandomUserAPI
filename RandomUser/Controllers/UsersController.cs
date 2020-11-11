@@ -35,7 +35,7 @@ namespace RandomUser.Controllers
                 }).ToList<User>();
             if (users.Count == 0)
             {
-                return Ok("No users found");
+                return Ok();
             }
 
             return Ok(users);
@@ -65,8 +65,12 @@ namespace RandomUser.Controllers
                 };
                 if (user == null)
                 {
-                    return NotFound();
+                    return Ok();
                 }
+            } 
+            else
+            {
+                return Ok();
             }
 
             return Ok(user);

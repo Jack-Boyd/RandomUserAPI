@@ -2,6 +2,8 @@
 packages/
 RandomUser/[Bb]in/
 RandomUser/[Oo]bj/
+RandomUserUnitTest/[Bb]in/
+RandomUserUnitTest/[Oo]bj/
 *.user
 *.suo
 *.[Cc]ache
