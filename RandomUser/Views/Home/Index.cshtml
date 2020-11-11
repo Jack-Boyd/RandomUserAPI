@@ -50,6 +50,7 @@
     User user = JsonConvert.DeserializeObject<User>(userResponseString);
 }
 <style>
+
     input, select, textarea {
         max-width: 580px;
     }
@@ -264,45 +265,67 @@
 @functions {
     public string GetApi(string URL)
     {
-        string responseString = string.Empty;
-        ServicePointManager.Expect100Continue = true;
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
-        request.Method = "GET";
-
-        var response = (HttpWebResponse)request.GetResponse();
-        using (var stream = response.GetResponseStream())
+        try
         {
-            using (var reader = new StreamReader(stream))
+            string responseString = string.Empty;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+            request.Method = "GET";
+
+            var response = (HttpWebResponse)request.GetResponse();
+            using (var stream = response.GetResponseStream())
             {
-                responseString = reader.ReadToEnd();
-            }
-        };
-        return responseString;
+                using (var reader = new StreamReader(stream))
+                {
+                    responseString = reader.ReadToEnd();
+                }
+            };
+            return responseString;
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
     }
 
     public void PutApi(User update)
     {
-        var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://localhost:44383/api/users");
-        httpWebRequest.ContentType = "application/json";
-        httpWebRequest.Method = "PUT";
-        using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+        try
         {
-            string json = JsonConvert.SerializeObject(update); // Need to put data here to pass to the API.**
-            streamWriter.Write(json);
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("https://localhost:44383/api/users");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "PUT";
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(update); // Need to put data here to pass to the API.**
+                streamWriter.Write(json);
+            }
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var responseText = streamReader.ReadToEnd();
+            }
         }
-        var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-        using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+        catch (Exception ex)
         {
-            var responseText = streamReader.ReadToEnd();
+
         }
+
     }
 
     public void DeleteApi(string URL, int id)
     {
-        WebRequest request = WebRequest.Create(URL + "?id=" + id);
-        request.Method = "DELETE";
-        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        try
+        {
+            WebRequest request = WebRequest.Create(URL + "?id=" + id);
+            request.Method = "DELETE";
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        }
+        catch (Exception ex)
+        {
+
+        }
     }
     public void Serialize(Stream output, object input)
     {

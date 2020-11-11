@@ -35,7 +35,7 @@ namespace RandomUser.Controllers
                 }).ToList<User>();
             if (users.Count == 0)
             {
-                return Ok();
+                return Ok("No users found");
             }
 
             return Ok(users);
